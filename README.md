@@ -95,91 +95,6 @@ For more details please refer to [Micropython ESP32 README](https://github.com/m
 
 Refer to the README of the `lvgl_javascript` branch: https://github.com/lvgl/lv_micropython/tree/lvgl_javascript_v8#javascript-port
 
-### Raspberry Pi Pico port
-
-This port uses [Micropython infrastructure for C modules](https://docs.micropython.org/en/latest/develop/cmodules.html#compiling-the-cmodule-into-micropython) and `USER_C_MODULES` must be given:
-
-1. `git clone https://github.com/lvgl/lv_micropython.git`
-2. `cd lv_micropython`
-3. `git submodule update --init --recursive lib/lv_bindings`
-4. `make -C ports/rp2 BOARD=PICO submodules`
-5. `make -j -C mpy-cross`
-6. `make -j -C ports/rp2 BOARD=PICO USER_C_MODULES=../../lib/lv_bindings/bindings.cmake`
-
-#### Troubleshooting
-
-If you experience unstable behaviour, it is worth checking the value of *MICROPY_HW_FLASH_STORAGE_BASE* against the value of *__flash_binary_end* from the firmware.elf.map file.
-If the storage base is lower than the binary end, parts of the firmware will be overwritten when the micropython filesystem is initialised.
-
-## Super Simple Example
-
-First, LVGL needs to be imported and initialized
-
-```python
-import lvgl as lv
-lv.init()
-```
-
-Then event loop, display driver and input driver needs to be registered.
-Refer to [Porting the library](https://docs.lvgl.io/8.0/porting/index.html) for more information.
-Here is an example of registering SDL drivers on Micropython unix port:
-
-```python
-# Create an event loop and Register SDL display/mouse/keyboard drivers.
-from lv_utils import event_loop
-
-WIDTH = 480
-HEIGHT = 320
-
-event_loop = event_loop()
-disp_drv = lv.sdl_window_create(WIDTH, HEIGHT)
-mouse = lv.sdl_mouse_create()
-keyboard = lv.sdl_keyboard_create()
-keyboard.set_group(self.group)
-```
-
-Here is an alternative example, for registering ILI9341 drivers on Micropython ESP32 port:
-
-```python
-import lvgl as lv
-
-# Import ILI9341 driver and initialized it
-
-from ili9341 import ili9341
-disp = ili9341()
-
-# Import XPT2046 driver and initalize it
-
-from xpt2046 import xpt2046
-touch = xpt2046()
-```
-
-By default, both ILI9341 and XPT2046 are initialized on the same SPI bus with the following parameters:
-
-- ILI9341: `miso=5, mosi=18, clk=19, cs=13, dc=12, rst=4, power=14, backlight=15, spihost=esp.HSPI_HOST, mhz=40, factor=4, hybrid=True`
-- XPT2046: `cs=25, spihost=esp.HSPI_HOST, mhz=5, max_cmds=16, cal_x0 = 3783, cal_y0 = 3948, cal_x1 = 242, cal_y1 = 423, transpose = True, samples = 3`
-
-You can change any of these parameters on ili9341/xpt2046 constructor.
-You can also initalize them on different SPI buses if you want, by providing miso/mosi/clk parameters. Set them to -1 to use existing (initialized) spihost bus.
-
-Now you can create the GUI itself:
-
-```python
-
-# Create a screen with a button and a label
-
-scr = lv.obj()
-btn = lv.btn(scr)
-btn.align_to(lv.scr_act(), lv.ALIGN.CENTER, 0, 0)
-label = lv.label(btn)
-label.set_text("Hello World!")
-
-# Load the screen
-
-lv.scr_load(scr)
-
-```
-
 ## More information
 
 More info about LVGL:
@@ -231,8 +146,6 @@ Major components in this repository:
 - mpy-cross/ -- the MicroPython cross-compiler which is used to turn scripts
   into precompiled bytecode.
 - ports/unix/ -- a version of MicroPython that runs on Unix.
-- ports/stm32/ -- a version of MicroPython that runs on the PyBoard and similar
-  STM32 boards (using ST's Cube HAL drivers).
 - ports/minimal/ -- a minimal MicroPython port. Start with this if you want
   to port MicroPython to another microcontroller.
 - tests/ -- test framework and test scripts.
@@ -240,15 +153,6 @@ Major components in this repository:
   HTML documentation is available at http://docs.micropython.org.
 
 Additional components:
-- ports/bare-arm/ -- a bare minimum version of MicroPython for ARM MCUs. Used
-  mostly to control code size.
-- ports/teensy/ -- a version of MicroPython that runs on the Teensy 3.1
-  (preliminary but functional).
-- ports/pic16bit/ -- a version of MicroPython for 16-bit PIC microcontrollers.
-- ports/cc3200/ -- a version of MicroPython that runs on the CC3200 from TI.
-- ports/esp8266/ -- a version of MicroPython that runs on Espressif's ESP8266 SoC.
-- ports/esp32/ -- a version of MicroPython that runs on Espressif's ESP32 SoC.
-- ports/nrf/ -- a version of MicroPython that runs on Nordic's nRF51 and nRF52 MCUs.
 - extmod/ -- additional (non-core) modules implemented in C.
 - tools/ -- various tools, including the pyboard.py module.
 - examples/ -- a few example Python scripts.

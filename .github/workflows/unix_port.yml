@@ -1,7 +1,8 @@
 name: unix port
 
 on:
-  [pull_request]
+  workflow_dispatch:
+  pull_request:
 
 jobs:
   build:

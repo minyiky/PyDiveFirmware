@@ -1,8 +1,7 @@
 name: unix port
 
 on:
-  push:
-  pull_request:
+  [push, pull_request]
 
 jobs:
   build:

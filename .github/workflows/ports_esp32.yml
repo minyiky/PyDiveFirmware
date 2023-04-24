@@ -1,7 +1,7 @@
 name: esp32 port
 
 on:
-  push:
+  workflow_dispatch:
   pull_request:
     paths:
       - '.github/workflows/*.yml'

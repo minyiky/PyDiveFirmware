@@ -11,7 +11,9 @@ on:
       - 'lib/**'
       - 'drivers/**'
       - 'ports/esp32/**'
-
+  push:
+    branches:
+      - 'master'
 jobs:
   build_idf402:
     runs-on: ubuntu-20.04

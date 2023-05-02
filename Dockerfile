@@ -17,6 +17,8 @@ COPY ./docs /src/docs
 
 WORKDIR /src
 
+RUN git submodule update --init --recursive lib/lv_bindings
+
 RUN make -C mpy-cross && \
     make -C ports/unix submodules VARIANT=dev && \
     make -C ports/unix VARIANT=dev

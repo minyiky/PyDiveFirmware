@@ -1,7 +1,7 @@
 FROM ubuntu as builder
 
 RUN apt-get update > /dev/null && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential libreadline-dev libffi-dev git pkg-config libsdl2-2.0-0 libsdl2-dev python3 parallel > /dev/null && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential libreadline-dev libffi-dev git pkg-config libsdl2-2.0-0 libsdl2-dev python3 parallel ca-certificates > /dev/null && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./.git /src/.git
